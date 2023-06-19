@@ -5,29 +5,72 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class Main {
     public static void main(String[] args) {
         try {
             Document document = Jsoup.connect("https://msk.top-academy.ru/").get();
-            System.out.println(document.title());
-
             Element body = document.body();
+            Iterator<Element> iterator;
+            String attribute = "href";
+            String selector = ".main-phone--withDropDown";
+            String className = "main-phone--withDropDown";
 
+            System.out.println("Первые три тега \"h1\":");
             Elements h1s = body.getElementsByTag("h1");
-            for(Element h1 : h1s) {
-                System.out.println(h1.text());
+            iterator = h1s.iterator();
+            for (int i = 0; iterator.hasNext() && i < 3; i++) {
+                System.out.println("%d) %s".formatted(i+1, iterator.next().text()));
             }
 
-//            Elements ps = body.getElementsByTag("p");
-//            for(Element p : ps) {
-//                System.out.println(p.text());
-//            }
+            System.out.println();
+            System.out.println("Первые три тега \"p\":");
+            Elements ps = body.getElementsByTag("p");
+            iterator = ps.iterator();
+            for (int i = 0; iterator.hasNext() && i < 3; i++) {
+                System.out.println("%d) %s".formatted(i+1, iterator.next().text()));
+            }
 
+            System.out.println();
+            System.out.println("Первые три тега \"a\":");
             Elements as = body.getElementsByTag("a");
-            Iterator<Element> iterator =  as.iterator();
-            if (iterator.hasNext()) System.out.println(iterator.next().text());
+            iterator = as.iterator();
+            for (int i = 0; iterator.hasNext() && i < 3; i++) {
+                System.out.println("%d) %s".formatted(i+1, iterator.next().text()));
+            }
+
+            System.out.println();
+            System.out.println("Атрибут \"href\" первых трех тегов \"a\":");
+            iterator = as.iterator();
+            for (int i = 0; iterator.hasNext() && i < 3; i++) {
+                Element element = iterator.next();
+
+                if (element.hasAttr(attribute)) {
+                    System.out.println("%d) %s".formatted(i+1, element.attr(attribute)));
+                }
+            }
+
+            System.out.println();
+            System.out.println("первые три элемента с классом \".main-phone--withDropDown\":");
+            Elements selectedElements = body.select(".main-phone--withDropDown");
+            iterator = selectedElements.iterator();
+            for (int i = 0; iterator.hasNext() && i < 3; i++) {
+                System.out.println("%d) %s".formatted(i+1, iterator.next().text()));
+            }
+
+            System.out.println();
+            Element selectedElement;
+            iterator = selectedElements.iterator();
+            if (iterator.hasNext()) {
+                selectedElement = iterator.next();
+                System.out.println("Классы элемента до изменения");
+                System.out.println(Arrays.toString(selectedElement.classNames().toArray()));
+                selectedElement.addClass("temp");
+                System.out.println("Добвлен класс \"temp\"");
+                System.out.println(Arrays.toString(selectedElement.classNames().toArray()));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
